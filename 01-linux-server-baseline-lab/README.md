@@ -34,9 +34,10 @@ I was given SSH access to a Linux server as a new system administrator. Before m
    - Result: the root filesystem is 6.8 GB, 52% used.
 9. Checked which expected services were running with `pgrep -l <name>` for Java, clawd, Apache and MySQL.
    - `pgrep` searches running processes by name. `-l` prints the name beside the process ID.
-   - Only `java` was found (PID 695). I re-checked with `pgrep -f` and `ps aux | grep -i clawd | grep -v grep`, which search full command lines, and confirmed clawd was not running.
-   - `pgrep -f apache` matched the Java process, so I inspected it with `ps -o args= -p 695`. It was Apache Tomcat 9 (the path pointed to `/var/lib/tomcat9`), so "apache" matched inside its command line, not a separate Apache web server.
+   - Only `java` was found (PID 695). I re-checked with `pgrep -fl` and `ps aux | grep -i clawd | grep -v grep`, which search full command lines, and confirmed clawd was not running.
+   - `pgrep -fl apache` matched the Java process, so I inspected it with `ps -o args= -p 695`. It was Apache Tomcat 9 (the path pointed to `/var/lib/tomcat9`), so "apache" matched inside its command line, not a separate Apache web server.
    - Result: clawd, Apache and MySQL were not running. Java (Tomcat) was.
+   - Note: when I repeated this check later in the session, Tomcat was no longer running (see finding 5).
 
 ## What I found
 (results and what they mean)

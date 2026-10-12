@@ -40,7 +40,21 @@ I was given SSH access to a Linux server as a new system administrator. Before m
    - Note: when I repeated this check later in the session, Tomcat was no longer running (see finding 5).
 
 ## What I found
-(results and what they mean)
+### 1. System identity
+![Output of cat /etc/os-release](01-os-release.png)
+Confirms Ubuntu 24.04.3 LTS (Noble Numbat) via `/etc/os-release`. `ID_LIKE=debian` shows it is Debian-based.
+### 2. Workspace contents
+![Output of ls -lhS](02-ls-sorted-by-size.png)
+Sorted with ls -lhS. Directories show a fixed 4.0K, so the largest file is corrupted.txt (42 bytes). website.config is owned by a different user.
+### 3. Memory
+![Output of free -h](03-free-memory.png)
+454 MiB RAM, 326 MiB used, 127 MiB available, no swap. A small instance with limited headroom.
+### 4. Disk
+![Output of df -h](04-df-disk.png)
+The root filesystem is 6.8 GB, 52% used. tmpfs entries are RAM-backed, so they don't count as disk.
+### 5. Service failure
+![systemctl status tomcat9](05-tomcat-oom-kill.png)
+Tomcat 9 (PID 695) was running during my first check but had failed by a later one, with Result: oom-kill. The server has about 454 MiB of RAM and no swap, which is consistent with memory exhaustion.
 
 ## Problems and how I fixed them
 (where I got stuck)

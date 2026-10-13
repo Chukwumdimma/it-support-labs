@@ -57,7 +57,25 @@ The root filesystem is 6.8 GB, 52% used. tmpfs entries are RAM-backed, so they d
 Tomcat 9 (PID 695) was running during my first check but had failed by a later one, with Result: oom-kill. The server has about 454 MiB of RAM and no swap, which is consistent with memory exhaustion.
 
 ## Problems and how I fixed them
-(where I got stuck)
+### 1. Counting files in the workspace
+- **Problem:** `ls` showed 6 items, but my first count of "files" was marked wrong.
+- **Fix:** I ran `ls -l` and looked at the first character of each line. `d` means a directory and `-` means a regular file, so two of the six items (`backup` and `systembackups`) were directories. That left 4 regular files, but the accepted answer was 3. It left out `website.config`, which is owned by a different user (`alex`), so the expected count seems to have included only files owned by my account.
+- **Lesson:** the raw output and the expected answer can differ, so I recorded both. Check types and ownership with `ls -l` before counting.
+
+### 2. Finding the largest file
+- **Problem:** the two directories appeared at the top of `ls -lhS` because they show a fixed 4.0K size, regardless of what's inside.
+- **Fix:** I compared only the regular files, which showed that `corrupted.txt` (42 bytes) was the largest.
+- **Lesson:** a directory's displayed size doesn't reflect its contents.
+
+### 3. A name search suggested Apache was running
+- **Problem:** `pgrep` by name found only `java`, but searching the full command line (`pgrep -f apache`) also matched the Java process.
+- **Fix:** I inspected process 695 with `ps -o args= -p 695`. The path pointed to `/var/lib/tomcat9`, so it was Apache Tomcat, a Java application server, and "apache" was a text match, not a separate Apache web server. I also noticed that `grep` matches its own command line, so I used `grep -v grep` and `pgrep` to avoid being misled.
+- **Lesson:** a matching word doesn't prove a service is running. Check the full command line.
+
+### 4. The Java service was gone on a later check
+- **Problem:** when I repeated the process check later, nothing showed for `java`, although Tomcat had been running earlier.
+- **Fix:** I checked `uptime -p` and `systemctl status tomcat9`. The service had failed with `Result: oom-kill`, meaning the kernel stopped it for running out of memory. That fits the server's 454 MiB of RAM and no swap. I did not restart anything, because the lab only asked me to observe.
+- **Lesson:** server state changes over time, so a result is only true at the moment you check it. Record what you saw and when.
 
 ## What I learned
 (2-3 lines)

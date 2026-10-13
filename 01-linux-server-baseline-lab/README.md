@@ -78,4 +78,7 @@ Tomcat 9 (PID 695) was running during my first check but had failed by a later o
 - **Lesson:** server state changes over time, so a result is only true at the moment you check it. Record what you saw and when.
 
 ## What I learned
-(2-3 lines)
+- Before touching a server, I check what it is and what shape it's in: the OS version, how much RAM and disk it has, and what is running. I did this with `cat /etc/os-release`, `free -h`, `df -h` and `pgrep`.
+- Don't trust the first result. A search for "apache" matched a Java process, but when I checked the full command line it was Tomcat, not a separate Apache web server. Later, Tomcat itself had been killed because the server ran out of memory. A result is only true at the moment you check it.
+- Sometimes the platform's expected answer differ from what the server showed, like the file count. I write down both and check with a second command before I trust anything.
+- I'm still a beginner at this, and the labs showed me how much more I can learn by running the commands myself.

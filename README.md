@@ -1,2 +1,2 @@
 # it-support-portfolio
-Hands-on IT support, SysAdmin and SOC labs with write-ups
+Hands-on IT support and SysAdmin labs with write-ups

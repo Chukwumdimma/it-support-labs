@@ -18,7 +18,24 @@ I was given RDP access to a Windows Server running a live workload. Before chang
 7. Checked which account runs `mysqld.exe` in Task Manager (Processes and Services tabs), then confirmed it with `Get-Process mysqld -IncludeUserName` and `tasklist /v`.
 
 ## What I found
-(screenshots with captions)
+### 1. Server identity and capacity
+![systeminfo output](w01-system-info.png)
+The server is Windows Server 2022 Datacenter running on AWS, hostname `ec2amaz-2rqv5pa`. It has 4 GB of RAM, and about 2.4 GB was available when I checked.
+
+![Disk Management](w02-disk.png)
+The C: drive is 50 GB with 24.77 GB free, so about half is used.
+
+### 2. Accounts and admin rights
+![net user and net localgroup administrators](w03-user-admin.png)
+`net user` showed 6 accounts. Three are built into Windows (DefaultAccount, Guest and WDAGUtilityAccount). The other three are in use: Administrator, intern-jane and intern-tom. Only Administrator has local admin rights. The two interns are standard users.
+
+### 3. Plaintext password
+![Credential file, password hidden](w05-credential-file-redacted.png)
+I found a password written in plain text in a file in the Documents folder. The password is hidden in the screenshot. Anyone who can open that folder can read it, so in a real job I'd delete the file, change the password, and keep passwords in a password manager.
+
+### 4. Database service account
+![Task Manager, MariaDB service](w06-mysqld-owner.png)
+In Task Manager I expanded the MySQL entry on the Processes tab and saw it was the MariaDB service. On the Services tab I found MariaDB running with its PID. PowerShell and `tasklist /v` both showed it runs as `NT SERVICE\MariaDB`, a service account made just for that service, which is what you want for a database.
 
 ## Problems and how I fixed them
 (where I got stuck)

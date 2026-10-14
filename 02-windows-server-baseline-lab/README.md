@@ -38,7 +38,25 @@ I found a password written in plain text in a file in the Documents folder. The 
 In Task Manager I expanded the MySQL entry on the Processes tab and saw it was the MariaDB service. On the Services tab I found MariaDB running with its PID. PowerShell and `tasklist /v` both showed it runs as `NT SERVICE\MariaDB`, a service account made just for that service, which is what you want for a database.
 
 ## Problems and how I fixed them
-(where I got stuck)
+### 1. Account count
+- **Problem:** `net user` showed 6 accounts, but the platform accepted 3.
+- **Fix:** The built-in accounts (DefaultAccount, Guest, WDAGUtilityAccount) are created by Windows. The 3 that counted were Administrator, intern-jane and intern-tom.
+- **Lesson:** Read the output against the question, and write down both numbers.
 
+### 2. First downloaded file
+- **Problem:** My first list was missing a hidden file, and the platform didn't accept the file with the earliest time.
+- **Fix:** I re-ran the listing with `-Force` and found `desktop.ini`, a hidden file Windows creates. The platform accepted `apache-maven-3.9.10-bin`, the first name alphabetically. The earliest download by time was `jdk-24_windows-x64_bin.msi`.
+- **Lesson:** Sort order can change the answer.
+
+### 3. Finding the password file
+- **Problem:** My first search opened a file with a long list of passwords, which wasn't what the task described.
+- **Fix:** I narrowed it down to files inside a user's own folders, and found the single one in Documents.
+- **Lesson:** Check a result against the question before trusting it.
+
+### 4. Database account name
+- **Problem:** My answer `nt service\mariadb` was marked wrong.
+- **Fix:** Three checks (`Get-Process`, `tasklist /v` and the service settings) all gave the same account. The platform wanted just `mariadb`.
+- **Lesson:** A checker can want a shorter form than the raw output. Verify the data first, then fix the format.
+  
 ## What I learned
 (summary)

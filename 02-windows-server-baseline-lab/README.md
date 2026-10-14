@@ -59,4 +59,7 @@ In Task Manager I expanded the MySQL entry on the Processes tab and saw it was t
 - **Lesson:** A checker can want a shorter form than the raw output. Verify the data first, then fix the format.
   
 ## What I learned
-(summary)
+- On a new server I check who can log in and who has admin rights before I touch anything. Only one account here was an admin, and the services ran under their own accounts.
+- A password in a plain text file is easy to find, so I'd move it out and change it straight away.
+- Hidden files matter. `-Force` turned up a file my first listing missed.
+- I'm still a beginner, so I used the graphical tools (Disk Management, Task Manager) and PowerShell together, and checking one against the other gave me confidence in the answers.
